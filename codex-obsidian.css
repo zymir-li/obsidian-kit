@@ -1,0 +1,1134 @@
+/*
+ * Codex Obsidian — unified visual system
+ *
+ * This is the only visual snippet that should be enabled.
+ * It consolidates the former codex-fonts, small-muted, dashboard-home,
+ * settings-surface-fix, and minimal-focus snippets.
+ *
+ * Scope:
+ * - typography and warm paper palette
+ * - quiet application shell
+ * - identical reading/editing content geometry
+ * - Markdown components
+ * - Home dashboard
+ * - settings surface repair
+ *
+ * CodeMirror heading margins are intentionally avoided because they can break
+ * outline navigation. Structural icons and native active states are preserved.
+ */
+
+/* -------------------------------------------------------------------------- */
+/* 1. Tokens and typography                                                   */
+/* -------------------------------------------------------------------------- */
+
+body {
+  --font-interface: "思源宋体 VF", "Source Han Serif SC VF", serif;
+  --font-text: "思源宋体 VF", "Source Han Serif SC VF", serif;
+  --font-monospace: "SF Mono", "SF Mono Light", monospace;
+
+  --focus-content-width: 940px;
+  --focus-content-gutter: 24px;
+  --focus-reading-line-height: 1.66;
+  --focus-editing-line-height: 1.76;
+  --focus-code-weight: 300;
+  --focus-border:
+    color-mix(in srgb, var(--background-modifier-border) 72%, transparent);
+  --focus-soft:
+    color-mix(in srgb, var(--text-normal) 4%, transparent);
+
+  -webkit-font-smoothing: auto;
+}
+
+.theme-light {
+  --background-primary: #f3f0e8;
+  --background-primary-alt: #efebe2;
+  --background-secondary: #ebe7dd;
+  --background-secondary-alt: #e4dfd4;
+  --background-modifier-border: #d6d0c4;
+  --background-modifier-border-hover: #c7c0b4;
+  --background-modifier-hover: rgba(48, 44, 38, 0.055);
+  --background-modifier-active-hover: rgba(48, 44, 38, 0.085);
+  --text-normal: #34312d;
+  --text-muted: #706b64;
+  --text-faint: #989289;
+  --text-accent: #5969ae;
+  --text-accent-hover: #48599f;
+  --interactive-accent: #6372b8;
+  --interactive-accent-hover: #5262a8;
+}
+
+.theme-dark {
+  --background-primary: #1b1b1a;
+  --background-primary-alt: #1f1f1d;
+  --background-secondary: #161615;
+  --background-secondary-alt: #242421;
+  --background-modifier-border: #393834;
+  --background-modifier-border-hover: #4b4944;
+  --background-modifier-hover: rgba(239, 235, 225, 0.06);
+  --background-modifier-active-hover: rgba(239, 235, 225, 0.095);
+  --text-normal: #e7e2d8;
+  --text-muted: #a39d94;
+  --text-faint: #716d67;
+  --text-accent: #9ca6df;
+  --text-accent-hover: #b2bae9;
+  --interactive-accent: #8996d7;
+  --interactive-accent-hover: #9ca6df;
+}
+
+.workspace,
+input,
+button,
+textarea,
+select {
+  font-family: var(--font-interface);
+  -webkit-font-smoothing: auto;
+}
+
+.markdown-source-view.mod-cm6 .cm-scroller,
+.markdown-source-view.mod-cm6 .cm-content,
+.markdown-reading-view .markdown-preview-view,
+.markdown-rendered {
+  font-family: var(--font-text);
+  -webkit-font-smoothing: auto;
+}
+
+.markdown-rendered code,
+.markdown-rendered pre,
+.markdown-source-view.mod-cm6 .cm-inline-code,
+.markdown-source-view.mod-cm6 .HyperMD-codeblock,
+.cm-editor .cm-scroller .cm-line .cm-inline-code {
+  font-family: var(--font-monospace) !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 2. Application shell                                                       */
+/* -------------------------------------------------------------------------- */
+
+html,
+body,
+.app-container,
+.horizontal-main-container,
+.workspace,
+.workspace-split.mod-root {
+  background-color: var(--background-primary) !important;
+}
+
+.workspace-ribbon,
+.workspace-split.mod-left-split,
+.workspace-split.mod-right-split,
+.workspace-sidedock-vault-profile {
+  background-color: var(--background-secondary) !important;
+}
+
+/* Exposed shell gutters belong to the sidebar surface, not the paper canvas. */
+.workspace {
+  background-color: var(--background-secondary) !important;
+}
+
+.workspace-split.mod-root {
+  background-color: var(--background-primary) !important;
+}
+
+.workspace-ribbon,
+.status-bar {
+  mix-blend-mode: normal !important;
+}
+
+.workspace-ribbon.mod-left::before {
+  background-color: var(--background-secondary) !important;
+}
+
+/* Border draws an inset workspace frame that leaves an L-shaped gutter. */
+body:not(.is-mobile) .workspace::before {
+  display: none !important;
+}
+
+.workspace-leaf-resize-handle {
+  border-color: var(--focus-border);
+}
+
+.workspace-ribbon .clickable-icon,
+.nav-header .clickable-icon,
+.view-header .clickable-icon {
+  color: var(--text-muted);
+}
+
+.workspace-ribbon .clickable-icon:not(:hover),
+.nav-header .clickable-icon:not(:hover),
+.view-header .clickable-icon:not(:hover) {
+  opacity: 0.72;
+}
+
+.status-bar {
+  border: 0;
+  background:
+    linear-gradient(
+      to left,
+      color-mix(in srgb, var(--background-primary) 94%, transparent) 72%,
+      transparent
+    ) !important;
+  box-shadow: none;
+  color: var(--text-faint);
+}
+
+/*
+ * Border reserves a permanent 24px strip below the workspace while also
+ * positioning the status bar there. Let the workspace use the full height and
+ * keep the status information as a compact overlay instead.
+ */
+body:not(.is-mobile) .horizontal-main-container {
+  padding-bottom: 0 !important;
+}
+
+body:not(.is-mobile) .status-bar {
+  right: 0;
+  bottom: 0;
+  width: auto !important;
+  min-height: 22px;
+  height: 22px;
+  padding-inline: 14px 8px;
+  border-radius: 8px 0 0 0;
+}
+
+body:not(.is-mobile) .status-bar-item {
+  height: 22px;
+}
+
+/*
+ * Compact collapsed sidebar
+ *
+ * Border keeps a 16px ribbon rail after the side dock closes and leaves
+ * disabled history buttons in the view header. The result looks like an empty
+ * sidebar. Remove only that dormant rail, keep the macOS traffic-light safe
+ * area, and suppress navigation actions that cannot do anything.
+ */
+body:not(.is-mobile)
+  .workspace:not(.is-left-sidedock-open)
+  > .workspace-ribbon.mod-left.is-collapsed {
+  display: none !important;
+}
+
+body:not(.is-mobile)
+  .workspace:not(.is-left-sidedock-open)
+  > .workspace-split.mod-root {
+  flex: 1 1 100%;
+  width: 100%;
+}
+
+body:not(.is-mobile).mod-macos.is-hidden-frameless
+  .workspace:not(.is-left-sidedock-open)
+  .sidebar-toggle-button.mod-left {
+  margin-left: 44px !important;
+}
+
+body:not(.is-mobile)
+  .workspace:not(.is-left-sidedock-open)
+  .view-header-nav-buttons
+  .clickable-icon[aria-disabled="true"] {
+  display: none !important;
+}
+
+/* Preserve Border's file icons and native active state. */
+.nav-file-title,
+.nav-folder-title {
+  color: var(--text-muted);
+  font-size: 12.5px;
+}
+
+.nav-folder-title {
+  color: color-mix(in srgb, var(--text-normal) 84%, var(--text-muted));
+  font-weight: 400;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 3. One content geometry for reading and editing                            */
+/* -------------------------------------------------------------------------- */
+
+.markdown-reading-view
+  .markdown-preview-view:not(.dashboard-home)
+  .markdown-preview-sizer,
+.markdown-source-view.mod-cm6:not(.dashboard-home) .cm-sizer {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--focus-content-width);
+  margin-inline: auto;
+}
+
+.markdown-source-view.mod-cm6:not(.dashboard-home)
+  :is(.inline-title, .metadata-container, .cm-contentContainer) {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+}
+
+.markdown-reading-view .markdown-preview-view:not(.dashboard-home) {
+  box-sizing: border-box;
+  padding-top: 24px !important;
+  padding-inline: var(--focus-content-gutter);
+  padding-bottom: 72px !important;
+  line-height: var(--focus-reading-line-height);
+}
+
+.markdown-source-view.mod-cm6:not(.dashboard-home) .cm-scroller {
+  box-sizing: border-box;
+  padding-top: 28px !important;
+  padding-inline: var(--focus-content-gutter);
+  padding-bottom: 72px !important;
+  line-height: var(--focus-editing-line-height);
+}
+
+.markdown-source-view.mod-cm6:not(.dashboard-home) .cm-content {
+  padding-inline: 0;
+  caret-color: var(--interactive-accent);
+}
+
+.markdown-source-view.mod-cm6:not(.dashboard-home)
+  :is(.cm-content, .cm-line) {
+  line-height: var(--focus-editing-line-height) !important;
+}
+
+.markdown-rendered:not(.dashboard-home),
+.markdown-source-view.mod-cm6:not(.dashboard-home) .cm-content {
+  color: var(--text-normal);
+  font-size: 1rem;
+}
+
+.markdown-source-view.mod-cm6:not(.dashboard-home) .cm-active.cm-line {
+  background:
+    color-mix(in srgb, var(--interactive-accent) 4%, transparent) !important;
+}
+
+/*
+ * Do not add margins to CodeMirror headings. Margins alter measured document
+ * geometry and can break outline/heading navigation.
+ */
+.markdown-source-view.mod-cm6:not(.dashboard-home)
+  :is(
+    .HyperMD-header-1,
+    .HyperMD-header-2,
+    .HyperMD-header-3,
+    .HyperMD-header-4,
+    .HyperMD-header-5,
+    .HyperMD-header-6
+  ) {
+  color: var(--text-normal) !important;
+  font-family: var(--font-text);
+  font-style: normal;
+  text-transform: none;
+  scroll-margin-top: 48px;
+}
+
+/*
+ * Padding is part of CodeMirror's measured line box, unlike margins. It gives
+ * headings breathing room without reintroducing the outline-jump bug.
+ */
+.markdown-source-view.mod-cm6:not(.dashboard-home) .HyperMD-header-1 {
+  padding-block: 0.34em 0.12em;
+}
+
+.markdown-source-view.mod-cm6:not(.dashboard-home) .HyperMD-header-2 {
+  padding-block: 0.28em 0.1em;
+}
+
+.markdown-source-view.mod-cm6:not(.dashboard-home) .HyperMD-header-3 {
+  padding-block: 0.22em 0.08em;
+}
+
+.markdown-source-view.mod-cm6:not(.dashboard-home)
+  :is(.HyperMD-header-4, .HyperMD-header-5, .HyperMD-header-6) {
+  padding-block: 0.16em 0.06em;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 4. Editorial rhythm                                                        */
+/* -------------------------------------------------------------------------- */
+
+.markdown-rendered:not(.dashboard-home) .inline-title,
+.markdown-source-view.mod-cm6:not(.dashboard-home) .inline-title {
+  margin-block: 0.35em 1em;
+  padding-bottom: 0 !important;
+  border-bottom: 0 !important;
+  color: var(--text-normal);
+  font-family: var(--font-text);
+  font-size: clamp(1.72rem, 3.5vw, 2rem);
+  font-weight: 680;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.markdown-rendered:not(.dashboard-home) :is(h1, h2, h3, h4, h5, h6) {
+  border: 0;
+  background: transparent;
+  color: var(--text-normal) !important;
+  font-family: var(--font-text);
+  font-style: normal;
+  text-transform: none;
+  scroll-margin-top: 48px;
+}
+
+.markdown-rendered:not(.dashboard-home) h1 {
+  margin-block: 1.02em 0.42em !important;
+  font-size: 1.65em !important;
+  font-weight: 670 !important;
+  letter-spacing: -0.02em;
+  line-height: 1.3 !important;
+}
+
+.markdown-rendered:not(.dashboard-home) h2 {
+  margin-block: 0.88em 0.36em !important;
+  font-size: 1.32em !important;
+  font-weight: 650 !important;
+  letter-spacing: -0.012em;
+  line-height: 1.34 !important;
+}
+
+.markdown-rendered:not(.dashboard-home) h3 {
+  margin-block: 0.72em 0.3em !important;
+  font-size: 1.13em !important;
+  font-weight: 650 !important;
+}
+
+.markdown-rendered:not(.dashboard-home) :is(h4, h5, h6) {
+  margin-block: 0.62em 0.24em !important;
+  font-size: 1em !important;
+  font-weight: 630 !important;
+}
+
+.markdown-reading-view
+  .markdown-preview-view:not(.dashboard-home)
+  .markdown-preview-section
+  > div
+  > p {
+  margin-block: 0 0.68em !important;
+}
+
+.markdown-reading-view
+  .markdown-preview-view:not(.dashboard-home)
+  .markdown-preview-section
+  > div:has(+ div > :is(ul, ol))
+  > p {
+  margin-block-end: 0.25em !important;
+}
+
+.markdown-rendered:not(.dashboard-home) strong,
+.markdown-source-view.mod-cm6:not(.dashboard-home) .cm-strong {
+  color: var(--text-normal) !important;
+  font-weight: 650 !important;
+  text-shadow: none !important;
+}
+
+.markdown-rendered:not(.dashboard-home) em,
+.markdown-source-view.mod-cm6:not(.dashboard-home) .cm-em {
+  color: color-mix(in srgb, var(--text-normal) 86%, var(--text-muted)) !important;
+}
+
+.markdown-rendered:not(.dashboard-home) a,
+.markdown-rendered:not(.dashboard-home) .internal-link,
+.markdown-source-view.mod-cm6:not(.dashboard-home)
+  :is(.cm-link, .cm-url, .cm-hmd-internal-link) {
+  color: var(--text-accent) !important;
+  text-decoration-line: underline;
+  text-decoration-color:
+    color-mix(in srgb, var(--text-accent) 26%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+.markdown-rendered:not(.dashboard-home) mark,
+.markdown-source-view.mod-cm6:not(.dashboard-home) .cm-highlight {
+  padding: 0.02em 0.14em;
+  border-radius: 2px;
+  background:
+    color-mix(in srgb, var(--color-yellow) 22%, transparent) !important;
+  color: inherit;
+}
+
+::selection {
+  background:
+    color-mix(in srgb, var(--interactive-accent) 18%, transparent) !important;
+  color: inherit;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 5. Markdown components                                                     */
+/* -------------------------------------------------------------------------- */
+
+.markdown-rendered:not(.dashboard-home) :is(ul, ol) {
+  margin-block: 0.3em 0.68em;
+  padding-inline-start: 1.55em;
+}
+
+.markdown-rendered:not(.dashboard-home) li {
+  margin-block: 0.1em;
+}
+
+.markdown-rendered:not(.dashboard-home) li::marker {
+  color: var(--text-faint);
+}
+
+.markdown-rendered:not(.dashboard-home) blockquote {
+  margin-block: 0.85em;
+  padding: 0.08em 0 0.08em 0.9em;
+  border: 0 !important;
+  border-inline-start: 2px solid
+    color-mix(in srgb, var(--interactive-accent) 48%, var(--focus-border))
+    !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--text-muted);
+  font-style: normal;
+}
+
+/* Border adds its own synthetic quote rail; keep exactly one real border. */
+.markdown-rendered:not(.dashboard-home) blockquote::before {
+  display: none !important;
+  content: none !important;
+}
+
+.markdown-source-view.mod-cm6:not(.dashboard-home) .cm-line.HyperMD-quote {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+.markdown-rendered:not(.dashboard-home) :not(pre) > code,
+.markdown-source-view.mod-cm6:not(.dashboard-home) .cm-inline-code {
+  padding: 0.07em 0.28em !important;
+  border: 0 !important;
+  border-radius: 3px !important;
+  background: var(--background-secondary) !important;
+  background-image: none !important;
+  color: var(--text-normal) !important;
+  font-family: var(--font-monospace) !important;
+  font-size: 0.86em !important;
+  font-weight: var(--focus-code-weight) !important;
+  font-synthesis: none;
+  -webkit-text-stroke: 0 !important;
+}
+
+.markdown-rendered:not(.dashboard-home) pre {
+  margin-block: 0.95em !important;
+  padding: 0.9em 1em !important;
+  border: 1px solid var(--focus-border) !important;
+  border-radius: 7px !important;
+  background:
+    color-mix(in srgb, var(--background-secondary) 74%, transparent) !important;
+  box-shadow: none !important;
+  font-family: var(--font-monospace) !important;
+  font-size: 0.86em !important;
+  font-weight: var(--focus-code-weight) !important;
+  font-synthesis: none;
+  -webkit-text-stroke: 0 !important;
+}
+
+/* Syntax themes often re-bold individual tokens; code stays typographically quiet. */
+.markdown-rendered:not(.dashboard-home) pre :is(code, span),
+.markdown-source-view.mod-cm6:not(.dashboard-home)
+  :is(.HyperMD-codeblock, .HyperMD-codeblock span, .cm-formatting-code) {
+  font-weight: var(--focus-code-weight) !important;
+  font-synthesis: none;
+  -webkit-text-stroke: 0 !important;
+}
+
+/*
+ * One quiet Callout language for default and advanced variants: semantic
+ * colour stays in the icon/title, while the container is a restrained card.
+ */
+.markdown-rendered:not(.dashboard-home) .callout,
+.markdown-source-view.mod-cm6:not(.dashboard-home) .callout {
+  --callout-border-width: 1px !important;
+  --callout-border-opacity: 1 !important;
+  --callout-padding: 10px 12px !important;
+  --callout-radius: 8px !important;
+  --callout-title-padding: 0 !important;
+  --callout-content-padding: 7px 0 0 !important;
+  --callout-content-background: transparent !important;
+  --callout-content-radius: 0 !important;
+  margin-block: 0.9em !important;
+  padding: 10px 12px !important;
+  border: 1px solid
+    color-mix(
+      in srgb,
+      rgb(var(--callout-color)) 22%,
+      var(--focus-border)
+    ) !important;
+  border-radius: 8px !important;
+  background:
+    color-mix(in srgb, rgb(var(--callout-color)) 3%, var(--background-primary))
+    !important;
+  box-shadow: none !important;
+}
+
+.markdown-rendered:not(.dashboard-home) .callout-title,
+.markdown-source-view.mod-cm6:not(.dashboard-home) .callout-title {
+  padding: 0 !important;
+  font-family: var(--font-interface);
+  font-size: 0.9em;
+  font-style: normal;
+  font-weight: 560;
+}
+
+.markdown-rendered:not(.dashboard-home) .callout-content,
+.markdown-source-view.mod-cm6:not(.dashboard-home) .callout-content {
+  padding: 7px 0 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.markdown-rendered:not(.dashboard-home) :is(strong > code, code strong),
+.markdown-source-view.mod-cm6:not(.dashboard-home)
+  .cm-inline-code.cm-strong {
+  font-weight: var(--focus-code-weight) !important;
+}
+
+.markdown-rendered:not(.dashboard-home) table {
+  width: 100%;
+  margin-block: 1em;
+  border: 0 !important;
+  border-collapse: collapse;
+}
+
+.markdown-rendered:not(.dashboard-home) :is(th, td) {
+  padding: 0.48em 0.7em;
+  border: 0 !important;
+  border-bottom: 1px solid var(--focus-border) !important;
+  background: transparent !important;
+  text-align: start;
+}
+
+.markdown-rendered:not(.dashboard-home) th {
+  font-family: var(--font-interface);
+  font-size: 0.9em;
+  font-weight: 620;
+}
+
+.markdown-rendered:not(.dashboard-home) hr {
+  margin-block: 1.5em;
+  border: 0;
+  border-top: 1px solid var(--focus-border);
+}
+
+/* Reading stays content-only; editing still exposes every property. */
+.markdown-reading-view
+  .markdown-preview-view:not(.dashboard-home)
+  .metadata-container {
+  display: none !important;
+}
+
+.metadata-container {
+  border-color: var(--focus-border);
+  background:
+    color-mix(in srgb, var(--background-secondary) 62%, transparent);
+  box-shadow: none;
+}
+
+/* Secondary text inserted by the "小字" Templater shortcut. */
+.markdown-rendered small.small-muted,
+.markdown-source-view.mod-cm6 small.small-muted {
+  color: var(--text-muted) !important;
+  font-size: 0.82em !important;
+  line-height: 1.5;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 6. Settings surface                                                        */
+/* -------------------------------------------------------------------------- */
+
+.theme-light .modal.mod-settings {
+  --background-primary: color-mix(
+    in srgb,
+    var(--background-secondary) 72%,
+    var(--color-base-10)
+  );
+  --background-primary-alt: color-mix(
+    in srgb,
+    var(--background-secondary) 84%,
+    var(--color-base-20)
+  );
+  --interactive-normal: color-mix(
+    in srgb,
+    var(--background-secondary) 58%,
+    var(--color-base-05)
+  );
+}
+
+.theme-light .modal.mod-settings .vertical-tab-content {
+  background-color: color-mix(
+    in srgb,
+    var(--background-secondary) 92%,
+    var(--color-base-20)
+  );
+}
+
+.theme-light .modal.mod-settings .setting-item {
+  border-color: color-mix(
+    in srgb,
+    var(--background-modifier-border) 68%,
+    transparent
+  );
+}
+
+.theme-light .modal.mod-settings input,
+.theme-light .modal.mod-settings textarea,
+.theme-light .modal.mod-settings select,
+.theme-light .modal.mod-settings .dropdown {
+  border-color: color-mix(
+    in srgb,
+    var(--background-modifier-border) 78%,
+    transparent
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/* 7. Home dashboard                                                          */
+/* -------------------------------------------------------------------------- */
+
+.markdown-preview-view.dashboard-home,
+.markdown-source-view.dashboard-home .cm-contentContainer {
+  --dashboard-accent: var(--color-accent);
+  --dashboard-border:
+    color-mix(in srgb, var(--background-modifier-border) 74%, transparent);
+  --dashboard-soft:
+    color-mix(in srgb, var(--background-secondary) 74%, transparent);
+}
+
+.markdown-preview-view.dashboard-home,
+.markdown-source-view.dashboard-home .cm-content {
+  max-width: 1180px;
+  margin-inline: auto;
+}
+
+.markdown-preview-view.dashboard-home {
+  padding: 38px 42px 84px;
+}
+
+.dashboard-home .inline-title,
+.dashboard-home .metadata-container,
+.workspace-leaf-content:has(.dashboard-home) .metadata-container,
+.workspace-leaf-content:has(.dashboard-home) .metadata-properties-heading {
+  display: none !important;
+}
+
+.dashboard-home .dashboard-hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 224px;
+  padding: 44px 48px;
+  margin: 4px 0 22px;
+  border: 1px solid
+    color-mix(in srgb, var(--dashboard-accent) 22%, var(--dashboard-border));
+  border-radius: 26px;
+  background:
+    radial-gradient(
+      circle at 88% 18%,
+      color-mix(in srgb, var(--dashboard-accent) 23%, transparent) 0,
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 66% 110%,
+      color-mix(in srgb, var(--color-purple) 18%, transparent) 0,
+      transparent 42%
+    ),
+    linear-gradient(
+      135deg,
+      color-mix(
+        in srgb,
+        var(--background-primary-alt) 88%,
+        var(--dashboard-accent)
+      ) 0%,
+      var(--background-secondary) 100%
+    );
+  box-shadow: none;
+}
+
+.dashboard-home .dashboard-hero::before,
+.dashboard-home .dashboard-hero::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  border: 1px solid
+    color-mix(in srgb, var(--dashboard-accent) 22%, transparent);
+  border-radius: 999px;
+}
+
+.dashboard-home .dashboard-hero::before {
+  width: 290px;
+  height: 290px;
+  right: -88px;
+  top: -152px;
+}
+
+.dashboard-home .dashboard-hero::after {
+  width: 180px;
+  height: 180px;
+  right: 56px;
+  top: -92px;
+}
+
+.dashboard-home .dashboard-kicker {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 18px;
+  color: var(--dashboard-accent);
+  font-family: var(--font-interface);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.18em;
+}
+
+.dashboard-home .dashboard-hero h1 {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 10px;
+  color: var(--text-normal);
+  font-size: clamp(35px, 5vw, 54px);
+  font-weight: 760;
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+}
+
+.dashboard-home .dashboard-hero p {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 16px;
+}
+
+.dashboard-home .dashboard-flow {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 28px;
+  color: var(--text-muted);
+  font-family: var(--font-interface);
+  font-size: 12px;
+}
+
+.dashboard-home .dashboard-flow span {
+  padding: 5px 10px;
+  border: 1px solid var(--dashboard-border);
+  border-radius: 999px;
+  background:
+    color-mix(in srgb, var(--background-primary) 76%, transparent);
+}
+
+.dashboard-home .dashboard-flow b {
+  color:
+    color-mix(in srgb, var(--dashboard-accent) 72%, var(--text-faint));
+  font-weight: 500;
+}
+
+.dashboard-home .dashboard-nav {
+  --dashboard-nav-card-radius: 16px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 18px;
+}
+
+.dashboard-home .dashboard-nav-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) 20px;
+  align-items: center;
+  gap: 11px;
+  min-height: 84px;
+  padding: 16px 17px;
+  color: var(--text-normal);
+  text-decoration: none !important;
+  border: 1px solid var(--dashboard-border);
+  border-radius: var(--dashboard-nav-card-radius) !important;
+  background:
+    color-mix(
+      in srgb,
+      var(--background-primary) 92%,
+      var(--background-secondary)
+    );
+  box-shadow: none;
+  transition:
+    transform 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.dashboard-home .dashboard-nav-card::after {
+  display: none;
+}
+
+.dashboard-home .dashboard-nav-card:is(:hover, :focus, :focus-visible, :active) {
+  color: var(--text-normal);
+  border-radius: var(--dashboard-nav-card-radius) !important;
+}
+
+.dashboard-home .dashboard-nav-card:hover {
+  transform: translateY(-2px);
+  border-color:
+    color-mix(in srgb, var(--dashboard-accent) 44%, var(--dashboard-border));
+  box-shadow:
+    0 10px 28px
+    color-mix(in srgb, var(--background-modifier-box-shadow) 68%, transparent);
+}
+
+.dashboard-home .dashboard-nav-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  color: var(--dashboard-accent);
+  background:
+    color-mix(in srgb, var(--dashboard-accent) 11%, transparent);
+  font-family: var(--font-interface);
+  font-size: 19px;
+}
+
+.dashboard-home .is-library .dashboard-nav-icon {
+  color: var(--color-blue);
+  background: color-mix(in srgb, var(--color-blue) 11%, transparent);
+}
+
+.dashboard-home .is-zettel .dashboard-nav-icon {
+  color: var(--color-cyan);
+  background: color-mix(in srgb, var(--color-cyan) 11%, transparent);
+}
+
+.dashboard-home .is-topic .dashboard-nav-icon {
+  color: var(--color-purple);
+  background: color-mix(in srgb, var(--color-purple) 11%, transparent);
+}
+
+.dashboard-home .is-project .dashboard-nav-icon {
+  color: var(--color-orange);
+  background: color-mix(in srgb, var(--color-orange) 11%, transparent);
+}
+
+.dashboard-home .is-journey .dashboard-nav-icon {
+  color: var(--color-green);
+  background: color-mix(in srgb, var(--color-green) 11%, transparent);
+}
+
+.dashboard-home .dashboard-nav-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.dashboard-home .dashboard-nav-copy strong {
+  font-family: var(--font-interface);
+  font-size: 14px;
+  font-weight: 680;
+}
+
+.dashboard-home .dashboard-nav-copy small {
+  overflow: hidden;
+  color: var(--text-muted);
+  font-family: var(--font-interface);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-home .dashboard-nav-arrow {
+  color: var(--text-faint);
+  font-family: var(--font-interface);
+  font-size: 14px;
+  transition:
+    color 150ms ease,
+    transform 150ms ease;
+}
+
+.dashboard-home .dashboard-nav-card:hover .dashboard-nav-arrow {
+  color: var(--dashboard-accent);
+  transform: translate(2px, -2px);
+}
+
+.dashboard-home .dashboard-prompt {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 42px;
+  padding: 15px 18px;
+  border: 1px solid
+    color-mix(in srgb, var(--dashboard-accent) 24%, var(--dashboard-border));
+  border-radius: 15px;
+  background:
+    color-mix(
+      in srgb,
+      var(--dashboard-accent) 6%,
+      var(--background-primary)
+    );
+  box-shadow: none;
+}
+
+.dashboard-home .dashboard-prompt-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  color: var(--dashboard-accent);
+  border-radius: 10px;
+  background:
+    color-mix(in srgb, var(--dashboard-accent) 12%, transparent);
+}
+
+.dashboard-home .dashboard-prompt div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dashboard-home .dashboard-prompt strong {
+  color: var(--text-normal);
+  font-family: var(--font-interface);
+  font-size: 13px;
+}
+
+.dashboard-home .dashboard-prompt small {
+  color: var(--text-muted);
+  font-family: var(--font-interface);
+  font-size: 11px;
+}
+
+.dashboard-home .dashboard-prompt a {
+  color: var(--dashboard-accent);
+  font-family: var(--font-interface);
+  font-size: 12px;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.dashboard-home .dashboard-section-title {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 38px 2px 13px;
+}
+
+.dashboard-home .dashboard-section-title > div {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.dashboard-home .dashboard-section-title span {
+  color: var(--dashboard-accent);
+  font-family: var(--font-interface);
+  font-size: 9px;
+  font-weight: 780;
+  letter-spacing: 0.16em;
+}
+
+.dashboard-home .dashboard-section-title h2 {
+  margin: 0;
+  color: var(--text-normal);
+  font-size: 21px;
+  font-weight: 720;
+  letter-spacing: -0.025em;
+}
+
+.dashboard-home .dashboard-section-title p {
+  margin: 0 0 2px;
+  color: var(--text-faint);
+  font-family: var(--font-interface);
+  font-size: 11px;
+}
+
+.dashboard-home .internal-embed {
+  border: 1px solid var(--dashboard-border);
+  border-radius: 17px;
+  background:
+    color-mix(
+      in srgb,
+      var(--background-primary) 95%,
+      var(--background-secondary)
+    );
+  box-shadow:
+    0 7px 22px
+    color-mix(in srgb, var(--background-modifier-box-shadow) 46%, transparent);
+}
+
+.dashboard-home .internal-embed .embed-title {
+  display: none;
+}
+
+.dashboard-home .dashboard-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 56px;
+  color: var(--text-faint);
+  font-family: var(--font-interface);
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.dashboard-home .dashboard-footer i {
+  width: 24px;
+  height: 1px;
+  background: var(--dashboard-border);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 8. Motion and responsive                                                   */
+/* -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard-home .dashboard-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .markdown-preview-view.dashboard-home {
+    padding-inline: 24px;
+  }
+}
+
+@media (max-width: 760px) {
+  body {
+    --focus-content-width: 100%;
+    --focus-content-gutter: 20px;
+  }
+}
+
+@media (max-width: 620px) {
+  .dashboard-home .dashboard-hero {
+    min-height: auto;
+    padding: 34px 26px;
+    border-radius: 21px;
+  }
+
+  .dashboard-home .dashboard-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-home .dashboard-prompt {
+    grid-template-columns: 38px minmax(0, 1fr);
+  }
+
+  .dashboard-home .dashboard-prompt a {
+    grid-column: 2;
+  }
+
+  .dashboard-home .dashboard-section-title p {
+    display: none;
+  }
+}
