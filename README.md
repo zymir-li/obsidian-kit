@@ -1,76 +1,47 @@
-# Codex Obsidian
+# Obsidian Kit
 
-一套面向中文知识库的 Obsidian 极简视觉覆盖层：弱化界面噪声，统一阅读与编辑版心，并为 Markdown、设置页和可选首页看板提供克制的视觉语言。
+一套温暖、安静、适合长期阅读与写作的个人 Obsidian 配置。
 
-> [!IMPORTANT]
-> **Base Theme：** [Border](https://github.com/Akifyss/obsidian-border) by [Akifyss](https://github.com/Akifyss)  
-> 当前版本基于 Border `1.13.7` 调整，并在 Obsidian `1.13.4`、macOS 上完成验证。仓库不包含或重新分发 Border 源码。
+![Obsidian Kit theme preview](./preview.png)
 
-![Codex Obsidian preview](./preview.png)
+这个仓库集中保存两类内容：当前使用的 **Baseline 主题与个人 CSS**，以及自己开发的 **Secret Copy 插件**。它只包含可公开、可重建的配置，不包含 vault 笔记、工作区状态或真实密钥。
 
-## 设计重点
+## Appearance
 
-- 温暖的纸张色背景，降低纯白界面的刺激感。
-- 保留 Obsidian 原生图标、文件选中态和交互语义。
-- 文件夹使用正常字重，界面层级依靠颜色和间距而不是粗体堆叠。
-- 阅读模式与编辑模式共享 `940px` 内容宽度和一致的水平对齐。
-- 标题使用内边距建立节奏，避免破坏 CodeMirror 的标题跳转。
-- 引用、Callout、代码块和表格采用轻边框、低对比背景。
-- 修复 Border 在收起侧栏、底部状态栏和设置页面中的视觉空白。
-- 同时提供浅色与深色变量，并尊重“减少动态效果”系统设置。
+当前外观由三层组成：
 
-## 核心视觉参数
+- **Baseline `3.2.12`**：基础主题快照。
+- **`zymir-obsidian-theme.css`**：字体、暖色纸张背景、内容版心、编辑/阅读节奏与常用 Markdown 组件。
+- **`red-graphite-codeblocks.css`**：独立的代码块配色与排版。
 
-| 元素 | 配置 |
-| --- | --- |
-| Base 主题 | Border `1.13.7` |
-| 界面字体 | `思源宋体 VF` / `Source Han Serif SC VF` |
-| 正文字体 | `思源宋体 VF` / `Source Han Serif SC VF` |
-| 等宽字体 | `SF Mono` / `SF Mono Light` |
-| 正文字号 | `1rem`，跟随 Obsidian 的基础字号设置；预览图为 `16px` |
-| 内容宽度 | `940px` |
-| 水平留白 | `24px`，窄屏为 `20px` |
-| 阅读行高 | `1.66` |
-| 编辑行高 | `1.76` |
-| 行内代码 / 代码块 | `0.86em`，字重 `300` |
-| H1 / H2 / H3 | `1.65em / 1.32em / 1.13em` |
-| Callout | `1px` 边框、`8px` 圆角、轻微语义色背景 |
+它不是一个重新发布的独立社区主题，而是一套建立在 Baseline 之上的个人视觉配置。安装方法见 [`appearance/README.md`](./appearance/README.md)。
 
-### 配色
+## Secret Copy
 
-| 模式 | 主背景 | 侧栏背景 | 正文 | 强调色 |
-| --- | --- | --- | --- | --- |
-| 浅色 | `#f3f0e8` | `#ebe7dd` | `#34312d` | `#5969ae` |
-| 深色 | `#1b1b1a` | `#161615` | `#e7e2d8` | `#9ca6df` |
+Secret Copy 让笔记只保存密钥引用，在阅读模式中显示标签或掩码：
 
-## 安装
-
-1. 在 Obsidian 的「设置 → 外观 → 主题」中安装并启用 **Border**。
-2. 安装 `思源宋体 VF`。代码字体默认使用 `SF Mono`；其他系统会回退到系统等宽字体。
-3. 下载仓库中的 [`codex-obsidian.css`](./codex-obsidian.css)。
-4. 将文件放入知识库的 `.obsidian/snippets/`。
-5. 在「设置 → 外观 → CSS 代码片段」中启用 `codex-obsidian`。
-6. 建议停用会重复修改字体、版心、Callout 或应用边框的其他 snippets。
-
-修改 CSS 后，可在 Obsidian 中关闭再重新启用该 snippet，或重新加载窗口。
-
-## 可选首页看板
-
-CSS 内包含 `dashboard-home` 样式，但仓库不会提供或上传任何个人笔记模板。若要在自己的首页使用这些样式，请在该笔记的属性中添加：
-
-```yaml
-cssclasses:
-  - dashboard-home
+````markdown
+```secret
+$DB_PASSWORD|数据库密码
+$API_TOKEN
 ```
+````
 
-看板的内容、链接与 HTML 结构需要由使用者在自己的知识库中维护。
+只有点击“复制”时，插件才会通过本地命令从 macOS 钥匙串、环境变量或密码管理器读取真实值，并直接写入剪贴板。密钥不会进入 Markdown、DOM 或 Git。
 
-## 说明
+源码、构建与安装说明见 [`plugins/secret-copy/README.md`](./plugins/secret-copy/README.md)。
 
-- 这是个人视觉覆盖层，不是 Border 的分支，也不是 Obsidian 社区主题商店中的独立主题。
-- 字体文件不随仓库分发；未安装指定字体时会使用 CSS 中的回退字体。
-- 项目与 OpenAI、Codex、Obsidian 官方均无隶属或背书关系。
+## Structure
+
+```text
+.
+├── appearance/
+│   ├── themes/Baseline/
+│   └── snippets/
+└── plugins/
+    └── secret-copy/
+```
 
 ## License
 
-本仓库代码采用 [MIT License](./LICENSE)。Base 主题 Border 的版权与许可归其原作者所有。
+个人代码与 CSS 使用 [MIT License](./LICENSE)。Baseline 来自 [aaaaalexis/obsidian-baseline](https://github.com/aaaaalexis/obsidian-baseline)，其快照保留原始版权与 MIT 许可。

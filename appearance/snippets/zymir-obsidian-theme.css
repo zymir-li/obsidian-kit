@@ -1,5 +1,5 @@
 /*
- * Codex Obsidian — unified visual system
+ * Zymir Obsidian Theme — unified visual system
  *
  * This is the only visual snippet that should be enabled.
  * It consolidates the former codex-fonts, small-muted, dashboard-home,
@@ -21,33 +21,84 @@
 /* 1. Tokens and typography                                                   */
 /* -------------------------------------------------------------------------- */
 
+@font-face {
+  font-family: "Codex Code Latin";
+  src:
+    local("SF Mono Regular"),
+    local("SFMono-Regular");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Codex Code Latin";
+  src:
+    local("SF Mono Medium"),
+    local("SFMono-Medium");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Codex CJK Mono";
+  src:
+    local("Xiaolai Mono"),
+    local("小赖字体等宽");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
 body {
   --font-interface: "思源宋体 VF", "Source Han Serif SC VF", serif;
   --font-text: "思源宋体 VF", "Source Han Serif SC VF", serif;
-  --font-monospace: "SF Mono", "SF Mono Light", monospace;
+  --font-monospace:
+    "Codex Code Latin",
+    "PingFang SC",
+    "Codex CJK Mono",
+    "Xiaolai Mono",
+    "小赖字体等宽",
+    monospace;
 
   --focus-content-width: 940px;
   --focus-content-gutter: 24px;
-  --focus-reading-line-height: 1.66;
+  --focus-reading-line-height: 1.68;
   --focus-editing-line-height: 1.76;
-  --focus-code-weight: 300;
+  --focus-paragraph-gap: 1.25em;
+  --focus-explicit-prose-break-gap: 0.4em;
+  --p-spacing: var(--focus-paragraph-gap);
+  --h1-size: 1.4em;
+  --h2-size: 1.16em;
+  --h3-size: 1em;
+  --h4-size: 0.92em;
+  --h5-size: 0.84em;
+  --h6-size: 0.76em;
+  --focus-inline-code-weight: 400;
+  --focus-inline-code-stroke: 0.08px;
+  --focus-code-block-gap: 0.9em;
+  --focus-adjacent-code-block-gap: 6px;
   --focus-border:
     color-mix(in srgb, var(--background-modifier-border) 72%, transparent);
-  --focus-soft:
-    color-mix(in srgb, var(--text-normal) 4%, transparent);
 
   -webkit-font-smoothing: auto;
 }
 
 .theme-light {
-  --background-primary: #f3f0e8;
-  --background-primary-alt: #efebe2;
-  --background-secondary: #ebe7dd;
-  --background-secondary-alt: #e4dfd4;
-  --background-modifier-border: #d6d0c4;
-  --background-modifier-border-hover: #c7c0b4;
-  --background-modifier-hover: rgba(48, 44, 38, 0.055);
-  --background-modifier-active-hover: rgba(48, 44, 38, 0.085);
+  --background-primary: #f3f0e8 !important;
+  --background-primary-alt: #efebe2 !important;
+  --background-secondary: #ebe7dd !important;
+  --background-secondary-alt: #e4dfd4 !important;
+  --background-modifier-border: #d6d0c4 !important;
+  --background-modifier-border-hover: #c7c0b4 !important;
+  --background-modifier-hover: rgba(48, 44, 38, 0.055) !important;
+  --background-modifier-active-hover: rgba(48, 44, 38, 0.085) !important;
+  --titlebar-background: #ebe7dd !important;
+  --titlebar-background-focused: #ebe7dd !important;
+  --modal-background: #f3f0e8 !important;
+  --prompt-background: #f3f0e8 !important;
+  --menu-background: #f3f0e8 !important;
   --text-normal: #34312d;
   --text-muted: #706b64;
   --text-faint: #989289;
@@ -55,6 +106,10 @@ body {
   --text-accent-hover: #48599f;
   --interactive-accent: #6372b8;
   --interactive-accent-hover: #5262a8;
+  /* Inline code. */
+  --focus-inline-code-bg: #e6e1d8;
+  --focus-inline-code-text: #3f3a35;
+
 }
 
 .theme-dark {
@@ -73,6 +128,10 @@ body {
   --text-accent-hover: #b2bae9;
   --interactive-accent: #8996d7;
   --interactive-accent-hover: #9ca6df;
+  /* Dark companion for inline code. */
+  --focus-inline-code-bg: #292826;
+  --focus-inline-code-text: #ded8d0;
+
 }
 
 .workspace,
@@ -92,10 +151,8 @@ select {
   -webkit-font-smoothing: auto;
 }
 
-.markdown-rendered code,
-.markdown-rendered pre,
+.markdown-rendered :not(pre) > code,
 .markdown-source-view.mod-cm6 .cm-inline-code,
-.markdown-source-view.mod-cm6 .HyperMD-codeblock,
 .cm-editor .cm-scroller .cm-line .cm-inline-code {
   font-family: var(--font-monospace) !important;
 }
@@ -157,6 +214,27 @@ body:not(.is-mobile) .workspace::before {
 .nav-header .clickable-icon:not(:hover),
 .view-header .clickable-icon:not(:hover) {
   opacity: 0.72;
+}
+
+/*
+ * Baseline paints the right sidebar toggle's full header-action cell with the
+ * secondary surface. On the unified paper shell this reads as a stray square.
+ * Keep the cell transparent and leave hover feedback to the icon itself.
+ */
+body:not(.is-mobile)
+  .workspace
+  .mod-root
+  .sidebar-toggle-button.mod-right {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+body:not(.is-mobile)
+  .workspace
+  .mod-root
+  .sidebar-toggle-button.mod-right
+  > .clickable-icon:not(:hover) {
+  background-color: transparent !important;
 }
 
 .status-bar {
@@ -270,7 +348,7 @@ body:not(.is-mobile)
   line-height: var(--focus-reading-line-height);
 }
 
-.markdown-source-view.mod-cm6:not(.dashboard-home) .cm-scroller {
+.markdown-source-view.mod-cm6:not(.dashboard-home) > .cm-editor > .cm-scroller {
   box-sizing: border-box;
   padding-top: 28px !important;
   padding-inline: var(--focus-content-gutter);
@@ -286,6 +364,46 @@ body:not(.is-mobile)
 .markdown-source-view.mod-cm6:not(.dashboard-home)
   :is(.cm-content, .cm-line) {
   line-height: var(--focus-editing-line-height) !important;
+}
+
+/* A deliberate source newline starts a new prose beat. Automatic visual wraps
+ * remain inside the same .cm-line and therefore keep the normal line height. */
+.markdown-source-view.mod-cm6:not(.dashboard-home)
+  .cm-line:not([class*="HyperMD-"]):not(:has(> br:only-child))
+  + .cm-line:not([class*="HyperMD-"]):not(:has(> br:only-child)) {
+  padding-top: var(--focus-explicit-prose-break-gap) !important;
+}
+
+/* A blank line between two prose paragraphs gets a little more breathing room. */
+.markdown-source-view.mod-cm6:not(.dashboard-home)
+  .cm-line:not([class*="HyperMD-"])
+  + .cm-line:not([class*="HyperMD-"]):has(> br:only-child):has(
+    + .cm-line:not([class*="HyperMD-"])
+  ) {
+  padding-block: 0.12em !important;
+}
+
+/*
+ * Reading view collapses the blank Markdown lines around a blockquote into the
+ * quote's block margin. Live Preview otherwise renders each as a full 1.78-line
+ * text row, which makes the quote feel detached from the surrounding prose.
+ */
+.markdown-source-view.mod-cm6:not(.dashboard-home)
+  .cm-line:has(> br:only-child):has(+ .HyperMD-quote),
+.markdown-source-view.mod-cm6:not(.dashboard-home)
+  .HyperMD-quote
+  + .cm-line:has(> br:only-child) {
+  line-height: 0.72 !important;
+  padding-block: 0 !important;
+}
+
+/* Match the rendered quote's quiet editorial voice in Live Preview. */
+.markdown-source-view.mod-cm6:not(.dashboard-home)
+  .HyperMD-quote,
+.markdown-source-view.mod-cm6:not(.dashboard-home)
+  .HyperMD-quote
+  :is(.cm-quote, .cm-em) {
+  font-style: italic !important;
 }
 
 .markdown-rendered:not(.dashboard-home),
@@ -351,7 +469,7 @@ body:not(.is-mobile)
   border-bottom: 0 !important;
   color: var(--text-normal);
   font-family: var(--font-text);
-  font-size: clamp(1.72rem, 3.5vw, 2rem);
+  font-size: var(--inline-title-size);
   font-weight: 680;
   letter-spacing: -0.02em;
   line-height: 1.3;
@@ -369,7 +487,7 @@ body:not(.is-mobile)
 
 .markdown-rendered:not(.dashboard-home) h1 {
   margin-block: 1.02em 0.42em !important;
-  font-size: 1.65em !important;
+  font-size: var(--h1-size) !important;
   font-weight: 670 !important;
   letter-spacing: -0.02em;
   line-height: 1.3 !important;
@@ -377,7 +495,7 @@ body:not(.is-mobile)
 
 .markdown-rendered:not(.dashboard-home) h2 {
   margin-block: 0.88em 0.36em !important;
-  font-size: 1.32em !important;
+  font-size: var(--h2-size) !important;
   font-weight: 650 !important;
   letter-spacing: -0.012em;
   line-height: 1.34 !important;
@@ -385,13 +503,25 @@ body:not(.is-mobile)
 
 .markdown-rendered:not(.dashboard-home) h3 {
   margin-block: 0.72em 0.3em !important;
-  font-size: 1.13em !important;
+  font-size: var(--h3-size) !important;
   font-weight: 650 !important;
 }
 
-.markdown-rendered:not(.dashboard-home) :is(h4, h5, h6) {
+.markdown-rendered:not(.dashboard-home) h4 {
   margin-block: 0.62em 0.24em !important;
-  font-size: 1em !important;
+  font-size: var(--h4-size) !important;
+  font-weight: 630 !important;
+}
+
+.markdown-rendered:not(.dashboard-home) h5 {
+  margin-block: 0.58em 0.22em !important;
+  font-size: var(--h5-size) !important;
+  font-weight: 630 !important;
+}
+
+.markdown-rendered:not(.dashboard-home) h6 {
+  margin-block: 0.54em 0.2em !important;
+  font-size: var(--h6-size) !important;
   font-weight: 630 !important;
 }
 
@@ -401,26 +531,6 @@ body:not(.is-mobile)
   > div
   > p {
   margin-block: 0 0.68em !important;
-}
-
-.markdown-reading-view
-  .markdown-preview-view:not(.dashboard-home)
-  .markdown-preview-section
-  > div:has(+ div > :is(ul, ol))
-  > p {
-  margin-block-end: 0.25em !important;
-}
-
-.markdown-rendered:not(.dashboard-home) strong,
-.markdown-source-view.mod-cm6:not(.dashboard-home) .cm-strong {
-  color: var(--text-normal) !important;
-  font-weight: 650 !important;
-  text-shadow: none !important;
-}
-
-.markdown-rendered:not(.dashboard-home) em,
-.markdown-source-view.mod-cm6:not(.dashboard-home) .cm-em {
-  color: color-mix(in srgb, var(--text-normal) 86%, var(--text-muted)) !important;
 }
 
 .markdown-rendered:not(.dashboard-home) a,
@@ -435,13 +545,24 @@ body:not(.is-mobile)
   text-underline-offset: 0.18em;
 }
 
-.markdown-rendered:not(.dashboard-home) mark,
-.markdown-source-view.mod-cm6:not(.dashboard-home) .cm-highlight {
-  padding: 0.02em 0.14em;
-  border-radius: 2px;
+/* Rendered tags share the compact, low-radius language of inline code. */
+.markdown-rendered:not(.dashboard-home) a.tag {
+  padding: 0.04em 0.34em;
+  border: 1px solid
+    color-mix(in srgb, var(--interactive-accent) 18%, var(--focus-border));
+  border-radius: 3px;
   background:
-    color-mix(in srgb, var(--color-yellow) 22%, transparent) !important;
-  color: inherit;
+    color-mix(in srgb, var(--interactive-accent) 6%, transparent);
+  text-decoration: none;
+}
+
+/* Live Preview splits the hash and label into separate spans; keep them flat. */
+.markdown-source-view.mod-cm6:not(.dashboard-home) .cm-hashtag {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  text-decoration: none;
 }
 
 ::selection {
@@ -454,152 +575,71 @@ body:not(.is-mobile)
 /* 5. Markdown components                                                     */
 /* -------------------------------------------------------------------------- */
 
-.markdown-rendered:not(.dashboard-home) :is(ul, ol) {
-  margin-block: 0.3em 0.68em;
-  padding-inline-start: 1.55em;
-}
-
-.markdown-rendered:not(.dashboard-home) li {
-  margin-block: 0.1em;
-}
-
-.markdown-rendered:not(.dashboard-home) li::marker {
-  color: var(--text-faint);
-}
-
-.markdown-rendered:not(.dashboard-home) blockquote {
-  margin-block: 0.85em;
-  padding: 0.08em 0 0.08em 0.9em;
-  border: 0 !important;
-  border-inline-start: 2px solid
-    color-mix(in srgb, var(--interactive-accent) 48%, var(--focus-border))
-    !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  color: var(--text-muted);
-  font-style: normal;
-}
-
-/* Border adds its own synthetic quote rail; keep exactly one real border. */
-.markdown-rendered:not(.dashboard-home) blockquote::before {
-  display: none !important;
-  content: none !important;
-}
-
-.markdown-source-view.mod-cm6:not(.dashboard-home) .cm-line.HyperMD-quote {
-  background: transparent !important;
-  background-image: none !important;
-}
-
 .markdown-rendered:not(.dashboard-home) :not(pre) > code,
 .markdown-source-view.mod-cm6:not(.dashboard-home) .cm-inline-code {
-  padding: 0.07em 0.28em !important;
+  padding: 0.06em 0.28em !important;
   border: 0 !important;
   border-radius: 3px !important;
-  background: var(--background-secondary) !important;
+  background: var(--focus-inline-code-bg) !important;
   background-image: none !important;
-  color: var(--text-normal) !important;
+  color: var(--focus-inline-code-text) !important;
   font-family: var(--font-monospace) !important;
-  font-size: 0.86em !important;
-  font-weight: var(--focus-code-weight) !important;
+  font-size: 0.84em !important;
+  font-weight: var(--focus-inline-code-weight) !important;
+  letter-spacing: -0.01em;
+  vertical-align: 0.02em;
   font-synthesis: none;
-  -webkit-text-stroke: 0 !important;
+  -webkit-text-stroke: var(--focus-inline-code-stroke) !important;
 }
 
+/* Give fenced code a modest vertical pause without changing its width. */
 .markdown-rendered:not(.dashboard-home) pre {
-  margin-block: 0.95em !important;
-  padding: 0.9em 1em !important;
-  border: 1px solid var(--focus-border) !important;
-  border-radius: 7px !important;
-  background:
-    color-mix(in srgb, var(--background-secondary) 74%, transparent) !important;
-  box-shadow: none !important;
-  font-family: var(--font-monospace) !important;
-  font-size: 0.86em !important;
-  font-weight: var(--focus-code-weight) !important;
-  font-synthesis: none;
-  -webkit-text-stroke: 0 !important;
+  margin-block: var(--focus-code-block-gap) !important;
 }
 
-/* Syntax themes often re-bold individual tokens; code stays typographically quiet. */
-.markdown-rendered:not(.dashboard-home) pre :is(code, span),
+/* Reading View wraps top-level blocks in .el-pre. Keep only 6px between
+ * consecutive fenced blocks while retaining the normal prose-to-code rhythm. */
+.markdown-rendered:not(.dashboard-home) .el-pre:has(+ .el-pre) > pre,
+.markdown-rendered:not(.dashboard-home) pre:has(+ pre) {
+  margin-bottom: 0 !important;
+}
+
+.markdown-rendered:not(.dashboard-home) .el-pre + .el-pre > pre,
+.markdown-rendered:not(.dashboard-home) pre + pre {
+  margin-top: var(--focus-adjacent-code-block-gap) !important;
+}
+
+/* Live Preview renders fenced code as consecutive HyperMD lines. Keep the
+ * regular prose-to-code pause on real content lines, not on blank rows. */
 .markdown-source-view.mod-cm6:not(.dashboard-home)
-  :is(.HyperMD-codeblock, .HyperMD-codeblock span, .cm-formatting-code) {
-  font-weight: var(--focus-code-weight) !important;
-  font-synthesis: none;
-  -webkit-text-stroke: 0 !important;
+  .cm-line:not(.HyperMD-codeblock):not(:has(> br:only-child)):has(
+    + .cm-line.HyperMD-codeblock-begin
+  ) {
+  padding-bottom: var(--focus-code-block-gap) !important;
 }
 
-/*
- * One quiet Callout language for default and advanced variants: semantic
- * colour stays in the icon/title, while the container is a restrained card.
- */
-.markdown-rendered:not(.dashboard-home) .callout,
-.markdown-source-view.mod-cm6:not(.dashboard-home) .callout {
-  --callout-border-width: 1px !important;
-  --callout-border-opacity: 1 !important;
-  --callout-padding: 10px 12px !important;
-  --callout-radius: 8px !important;
-  --callout-title-padding: 0 !important;
-  --callout-content-padding: 7px 0 0 !important;
-  --callout-content-background: transparent !important;
-  --callout-content-radius: 0 !important;
-  margin-block: 0.9em !important;
-  padding: 10px 12px !important;
-  border: 1px solid
-    color-mix(
-      in srgb,
-      rgb(var(--callout-color)) 22%,
-      var(--focus-border)
-    ) !important;
-  border-radius: 8px !important;
-  background:
-    color-mix(in srgb, rgb(var(--callout-color)) 3%, var(--background-primary))
-    !important;
-  box-shadow: none !important;
-}
-
-.markdown-rendered:not(.dashboard-home) .callout-title,
-.markdown-source-view.mod-cm6:not(.dashboard-home) .callout-title {
-  padding: 0 !important;
-  font-family: var(--font-interface);
-  font-size: 0.9em;
-  font-style: normal;
-  font-weight: 560;
-}
-
-.markdown-rendered:not(.dashboard-home) .callout-content,
-.markdown-source-view.mod-cm6:not(.dashboard-home) .callout-content {
-  padding: 7px 0 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-}
-
-.markdown-rendered:not(.dashboard-home) :is(strong > code, code strong),
 .markdown-source-view.mod-cm6:not(.dashboard-home)
-  .cm-inline-code.cm-strong {
-  font-weight: var(--focus-code-weight) !important;
+  .cm-line.HyperMD-codeblock-end
+  + .cm-line:not(.HyperMD-codeblock):not(:has(> br:only-child)) {
+  padding-top: var(--focus-code-block-gap) !important;
 }
 
-.markdown-rendered:not(.dashboard-home) table {
-  width: 100%;
-  margin-block: 1em;
-  border: 0 !important;
-  border-collapse: collapse;
+/* No blank Markdown line is required between two fenced blocks. */
+.markdown-source-view.mod-cm6:not(.dashboard-home)
+  .cm-line.HyperMD-codeblock-end
+  + .cm-line.HyperMD-codeblock-begin {
+  margin-top: var(--focus-adjacent-code-block-gap) !important;
 }
 
-.markdown-rendered:not(.dashboard-home) :is(th, td) {
-  padding: 0.48em 0.7em;
-  border: 0 !important;
-  border-bottom: 1px solid var(--focus-border) !important;
-  background: transparent !important;
-  text-align: start;
-}
-
-.markdown-rendered:not(.dashboard-home) th {
-  font-family: var(--font-interface);
-  font-size: 0.9em;
-  font-weight: 620;
+/* If a blank line is present anyway, compress it to the same 6px rhythm
+ * instead of adding a full editor line plus padding on both sides. */
+.markdown-source-view.mod-cm6:not(.dashboard-home)
+  .cm-line.HyperMD-codeblock-end
+  + .cm-line:not(.HyperMD-codeblock):has(> br:only-child):has(
+    + .cm-line.HyperMD-codeblock-begin
+  ) {
+  line-height: var(--focus-adjacent-code-block-gap) !important;
+  padding-block: 0 !important;
 }
 
 .markdown-rendered:not(.dashboard-home) hr {
@@ -628,6 +668,154 @@ body:not(.is-mobile)
   color: var(--text-muted) !important;
   font-size: 0.82em !important;
   line-height: 1.5;
+}
+
+/* Quiet Baseline's outlined callouts without losing their semantic colour. */
+body.theme-light
+  :is(
+    .markdown-rendered:not(.dashboard-home),
+    .markdown-source-view.mod-cm6:not(.dashboard-home)
+  )
+  .callout:not([data-callout="note-toolbar"]) {
+  --callout-border-width: 1px;
+  --callout-border-opacity: 1;
+  overflow: hidden !important;
+  border-color:
+    color-mix(
+      in srgb,
+      var(--callout-color) 18%,
+      var(--background-modifier-border)
+    ) !important;
+  background:
+    color-mix(
+      in srgb,
+      var(--callout-color) 3%,
+      var(--background-primary)
+    ) !important;
+  box-shadow: none !important;
+}
+
+body.theme-light
+  :is(
+    .markdown-rendered:not(.dashboard-home),
+    .markdown-source-view.mod-cm6:not(.dashboard-home)
+  )
+  .callout:not([data-callout="note-toolbar"])
+  .callout-title {
+  width: auto !important;
+  max-width: none !important;
+  padding: 0 !important;
+  transform: none !important;
+  background: transparent !important;
+  color:
+    color-mix(
+      in srgb,
+      var(--callout-color) 24%,
+      var(--text-normal)
+    ) !important;
+  font-size: 0.94em;
+  font-weight: 620;
+}
+
+body.theme-light
+  :is(
+    .markdown-rendered:not(.dashboard-home),
+    .markdown-source-view.mod-cm6:not(.dashboard-home)
+  )
+  .callout:not([data-callout="note-toolbar"])
+  :is(.callout-icon, .callout-fold) {
+  color:
+    color-mix(
+      in srgb,
+      var(--callout-color) 52%,
+      var(--text-normal)
+    ) !important;
+}
+
+body.theme-light
+  :is(
+    .markdown-rendered:not(.dashboard-home),
+    .markdown-source-view.mod-cm6:not(.dashboard-home)
+  )
+  .callout:not([data-callout="note-toolbar"])
+  .callout-content {
+  margin-left: 0 !important;
+  color: var(--text-normal);
+}
+
+body.theme-light
+  :is(
+    .markdown-rendered:not(.dashboard-home),
+    .markdown-source-view.mod-cm6:not(.dashboard-home)
+  )
+  .callout:not([data-callout="note-toolbar"])
+  .callout-content
+  > :first-child {
+  margin-block-start: 0.65em !important;
+}
+
+/* Preserve Baseline's floating legend only while the callout is expanded. */
+body.theme-light
+  :is(
+    .markdown-rendered:not(.dashboard-home),
+    .markdown-source-view.mod-cm6:not(.dashboard-home)
+  )
+  .callout:not(.is-collapsed):not([data-callout="note-toolbar"]) {
+  overflow: visible !important;
+}
+
+body.theme-light
+  :is(
+    .markdown-rendered:not(.dashboard-home),
+    .markdown-source-view.mod-cm6:not(.dashboard-home)
+  )
+  .callout:not(.is-collapsed):not([data-callout="note-toolbar"])
+  .callout-title {
+  width: fit-content !important;
+  max-width: 90% !important;
+  padding: 0 8px !important;
+  transform: translateY(-1.75rem) !important;
+  background: var(--background-primary) !important;
+}
+
+body.theme-light
+  :is(
+    .markdown-rendered:not(.dashboard-home),
+    .markdown-source-view.mod-cm6:not(.dashboard-home)
+  )
+  .callout:not(.is-collapsed):not([data-callout="note-toolbar"])
+  .callout-content {
+  overflow: visible !important;
+}
+
+body.theme-light
+  :is(
+    .markdown-rendered:not(.dashboard-home),
+    .markdown-source-view.mod-cm6:not(.dashboard-home)
+  )
+  .callout:not(.is-collapsed):not([data-callout="note-toolbar"])
+  .callout-content
+  > :first-child {
+  margin-block-start: -1rem !important;
+}
+
+body.theme-light
+  :is(
+    .markdown-rendered:not(.dashboard-home),
+    .markdown-source-view.mod-cm6:not(.dashboard-home)
+  )
+  .callout.is-collapsed:not([data-callout="note-toolbar"]) {
+  padding-block: 10px !important;
+}
+
+body.theme-light
+  :is(
+    .markdown-rendered:not(.dashboard-home),
+    .markdown-source-view.mod-cm6:not(.dashboard-home)
+  )
+  .callout.is-collapsed:not([data-callout="note-toolbar"])
+  .callout-content {
+  display: none !important;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -918,12 +1106,6 @@ body:not(.is-mobile)
   gap: 3px;
 }
 
-.dashboard-home .dashboard-nav-copy strong {
-  font-family: var(--font-interface);
-  font-size: 14px;
-  font-weight: 680;
-}
-
 .dashboard-home .dashboard-nav-copy small {
   overflow: hidden;
   color: var(--text-muted);
@@ -981,12 +1163,6 @@ body:not(.is-mobile)
   display: flex;
   flex-direction: column;
   gap: 2px;
-}
-
-.dashboard-home .dashboard-prompt strong {
-  color: var(--text-normal);
-  font-family: var(--font-interface);
-  font-size: 13px;
 }
 
 .dashboard-home .dashboard-prompt small {
@@ -1109,6 +1285,144 @@ body:not(.is-mobile)
   }
 }
 
+/* -------------------------------------------------------------------------- */
+/* 9. Compass route — native, offline Wiki surface                            */
+/* -------------------------------------------------------------------------- */
+
+.dashboard-home .dashboard-prompt.is-compass {
+  margin-bottom: 12px;
+  border-color: color-mix(in srgb, #ef3824 48%, var(--dashboard-border));
+  background: color-mix(in srgb, #ef3824 7%, var(--background-primary));
+}
+
+.dashboard-home .dashboard-prompt.is-compass .dashboard-prompt-icon,
+.dashboard-home .dashboard-prompt.is-compass a {
+  color: #ef3824;
+}
+
+.dashboard-home .dashboard-prompt.is-compass .dashboard-prompt-icon {
+  background: color-mix(in srgb, #ef3824 13%, transparent);
+}
+
+.markdown-preview-view.compass-route,
+.markdown-source-view.compass-route .cm-content {
+  max-width: 1080px;
+  margin-inline: auto;
+}
+
+.markdown-preview-view.compass-route {
+  padding: 44px clamp(24px, 6vw, 84px) 100px;
+}
+
+.compass-route .inline-title,
+.compass-route .metadata-container,
+.workspace-leaf-content:has(.compass-route) .metadata-container,
+.workspace-leaf-content:has(.compass-route) .metadata-properties-heading {
+  display: none !important;
+}
+
+.markdown-rendered.compass-route h1 {
+  margin: 42px 0 28px;
+  color: var(--text-normal);
+  font-size: clamp(38px, 6vw, 66px);
+  line-height: 1.02;
+  letter-spacing: -0.055em;
+}
+
+.markdown-rendered.compass-route h2 {
+  margin-top: 72px;
+  padding-top: 18px;
+  border-top: 1px solid var(--background-modifier-border);
+  font-size: clamp(28px, 4vw, 42px);
+  letter-spacing: -0.04em;
+}
+
+.markdown-rendered.compass-route h3 {
+  margin-top: 42px;
+  color: #ef3824;
+  font-size: 24px;
+}
+
+.markdown-rendered.compass-route a,
+.markdown-rendered.compass-route .internal-link {
+  text-decoration-color: #ef3824;
+  text-underline-offset: 3px;
+}
+
+.markdown-preview-view.compass-html-host,
+.markdown-source-view.compass-html-host .cm-content {
+  max-width: 1240px;
+  margin-inline: auto;
+}
+
+.markdown-preview-view.compass-html-host {
+  padding: 24px clamp(14px, 3vw, 36px) 60px;
+}
+
+.compass-html-host .inline-title,
+.compass-html-host .metadata-container,
+.workspace-leaf-content:has(.compass-html-host) .metadata-container,
+.workspace-leaf-content:has(.compass-html-host) .metadata-properties-heading {
+  display: none !important;
+}
+
+.compass-html-host iframe {
+  width: 100%;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 16px;
+  background: #f1efe8;
+  box-shadow: 0 12px 34px color-mix(in srgb, var(--background-modifier-box-shadow) 58%, transparent);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 10. Embed HTML Home — full-width application host                          */
+/* -------------------------------------------------------------------------- */
+
+.markdown-preview-view.dashboard-home.home-html-host,
+.markdown-source-view.dashboard-home.home-html-host .cm-content {
+  width: 100%;
+  max-width: 1380px;
+  margin-inline: auto;
+}
+
+.markdown-preview-view.dashboard-home.home-html-host {
+  padding: 10px 14px 54px !important;
+}
+
+.home-html-host .inline-title,
+.home-html-host .metadata-container,
+.workspace-leaf-content:has(.home-html-host) .metadata-container,
+.workspace-leaf-content:has(.home-html-host) .metadata-properties-heading {
+  display: none !important;
+}
+
+.home-html-host .markdown-preview-sizer,
+.home-html-host .markdown-preview-section,
+.home-html-host .markdown-preview-section > div {
+  width: 100%;
+  max-width: none !important;
+}
+
+.home-html-host .internal-embed,
+.home-html-host .file-embed {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.home-html-host iframe {
+  display: block;
+  width: 100% !important;
+  border: 0 !important;
+  border-radius: 22px;
+  background: var(--background-primary);
+  box-shadow: none;
+}
+
 @media (max-width: 620px) {
   .dashboard-home .dashboard-hero {
     min-height: auto;
@@ -1131,4 +1445,224 @@ body:not(.is-mobile)
   .dashboard-home .dashboard-section-title p {
     display: none;
   }
+
+  .markdown-preview-view.compass-route {
+    padding-inline: 20px;
+  }
+
+  .markdown-preview-view.dashboard-home.home-html-host {
+    padding-inline: 4px !important;
+  }
+
+  .home-html-host iframe {
+    border-radius: 16px;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* 11. Experimental warm editorial palette                                   */
+/*                                                                            */
+/* Trial only — remove this entire section to restore the previous palette.   */
+/* The dashboard and dark mode intentionally keep their established styling.  */
+/* -------------------------------------------------------------------------- */
+
+body.theme-light {
+  --experiment-body-text: #2b2824;
+  --experiment-heading-text: #000000;
+  --experiment-link-text: #5969ae;
+  --experiment-inline-code-bg: #e6dfd4;
+  --experiment-inline-code-text: #94463e;
+  --experiment-divider: #dcd5c6;
+  --focus-editing-line-height: 1.78;
+
+  --focus-inline-code-bg: var(--experiment-inline-code-bg);
+  --focus-inline-code-text: var(--experiment-inline-code-text);
+  --link-external-color: var(--experiment-link-text);
+  --link-external-color-hover: var(--experiment-link-text);
+  --hr-color: var(--experiment-divider);
+}
+
+body.theme-light .markdown-rendered:not(.dashboard-home),
+body.theme-light
+  .markdown-source-view.mod-cm6:not(.dashboard-home)
+  .cm-content {
+  color: var(--experiment-body-text) !important;
+}
+
+body.theme-light .markdown-rendered:not(.dashboard-home) .inline-title,
+body.theme-light
+  .markdown-source-view.mod-cm6:not(.dashboard-home)
+  .inline-title {
+  color: var(--experiment-heading-text) !important;
+  font-weight: 700 !important;
+}
+
+body.theme-light
+  .markdown-rendered:not(.dashboard-home)
+  :is(h1, h2, h3, h4, h5, h6),
+body.theme-light
+  .markdown-source-view.mod-cm6:not(.dashboard-home)
+  :is(
+    .HyperMD-header-1,
+    .HyperMD-header-2,
+    .HyperMD-header-3,
+    .HyperMD-header-4,
+    .HyperMD-header-5,
+    .HyperMD-header-6
+  ) {
+  color: var(--experiment-heading-text) !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+}
+
+body.theme-light
+  .markdown-source-view.mod-cm6:not(.dashboard-home)
+  .cm-header {
+  color: var(--experiment-heading-text) !important;
+}
+
+body.theme-light .markdown-rendered:not(.dashboard-home) a,
+body.theme-light
+  .markdown-rendered:not(.dashboard-home)
+  .internal-link,
+body.theme-light
+  .markdown-source-view.mod-cm6:not(.dashboard-home)
+  :is(.cm-link, .cm-url, .cm-hmd-internal-link),
+body.theme-light
+  .markdown-source-view.mod-cm6:not(.dashboard-home)
+  span:is(.cm-link, .cm-url)
+  a {
+  color: var(--experiment-link-text) !important;
+  text-decoration-color:
+    color-mix(in srgb, var(--experiment-link-text) 32%, transparent);
+}
+
+body.theme-light .markdown-rendered:not(.dashboard-home) a.tag {
+  border-color:
+    color-mix(in srgb, var(--experiment-link-text) 24%, var(--focus-border));
+  background:
+    color-mix(in srgb, var(--experiment-link-text) 6%, transparent);
+}
+
+body.theme-light .markdown-rendered:not(.dashboard-home) hr {
+  border-top-color: var(--experiment-divider) !important;
+}
+
+body.theme-light
+  .markdown-source-view.mod-cm6:not(.dashboard-home)
+  .cm-line.HyperMD-hr {
+  color: var(--experiment-divider) !important;
+}
+
+/* ------------------------------------------------------------------------ */
+/* Modern Chinese technical editorial structure                            */
+/* ------------------------------------------------------------------------ */
+
+body.theme-light
+  .markdown-reading-view
+  .markdown-preview-view:not(.dashboard-home)
+  .markdown-preview-section
+  > div
+  > p {
+  margin-block-end: 0.72em !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 12. Baseline theme compatibility overrides                                 */
+/* -------------------------------------------------------------------------- */
+
+/* Baseline 的 macOS 窗框会单独绘制背景，显式跟随侧栏色，避免黑条。 */
+body:not(.colorful-frame) .titlebar {
+  background: var(--titlebar-background) !important;
+  color: var(--text-normal) !important;
+}
+
+.modal.mod-settings,
+.modal.mod-settings .vertical-tab-content-container {
+  background-color: var(--background-primary) !important;
+}
+
+.modal.mod-settings .vertical-tab-header {
+  background-color: var(--background-secondary) !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 13. Jotter editorial typography                                             */
+/*                                                                            */
+/* Preserve Jotter's useful prose hierarchy when Baseline is active.           */
+/* -------------------------------------------------------------------------- */
+
+body {
+  --jotter-bold-underline: var(--text-accent);
+  --jotter-bold-underline-width: 2.75px;
+}
+
+/* H2: compact accent-colored section heading. */
+body:is(.theme-light, .theme-dark)
+  .markdown-rendered:not(.dashboard-home)
+  h2,
+body:is(.theme-light, .theme-dark)
+  .markdown-source-view.mod-cm6:not(.dashboard-home)
+  .HyperMD-header-2 {
+  color: var(--text-accent) !important;
+  font-size: var(--h2-size) !important;
+  font-style: normal !important;
+}
+
+body:is(.theme-light, .theme-dark)
+  .markdown-source-view.mod-cm6:not(.dashboard-home)
+  .cm-header-2 {
+  color: var(--text-accent) !important;
+  font-size: inherit !important;
+  font-style: inherit !important;
+}
+
+/* H3: quiet italic subheading in the normal text color. */
+body:is(.theme-light, .theme-dark)
+  .markdown-rendered:not(.dashboard-home)
+  h3,
+body:is(.theme-light, .theme-dark)
+  .markdown-source-view.mod-cm6:not(.dashboard-home)
+  .HyperMD-header-3 {
+  color: var(--text-normal) !important;
+  font-size: var(--h3-size) !important;
+  font-style: italic !important;
+}
+
+body:is(.theme-light, .theme-dark)
+  .markdown-source-view.mod-cm6:not(.dashboard-home)
+  .cm-header-3 {
+  color: var(--text-normal) !important;
+  font-size: inherit !important;
+  font-style: inherit !important;
+}
+
+/* H4: same scale as body copy, distinguished by its muted tone. */
+body:is(.theme-light, .theme-dark)
+  .markdown-rendered:not(.dashboard-home)
+  h4,
+body:is(.theme-light, .theme-dark)
+  .markdown-source-view.mod-cm6:not(.dashboard-home)
+  .HyperMD-header-4 {
+  color: var(--text-muted) !important;
+  font-size: var(--h4-size) !important;
+  font-style: normal !important;
+}
+
+body:is(.theme-light, .theme-dark)
+  .markdown-source-view.mod-cm6:not(.dashboard-home)
+  .cm-header-4 {
+  color: var(--text-muted) !important;
+  font-size: inherit !important;
+  font-style: inherit !important;
+}
+
+/* Jotter's signature marker-like underline for bold prose. */
+.markdown-rendered:not(.dashboard-home) strong,
+.markdown-source-view.mod-cm6:not(.dashboard-home) span.cm-strong {
+  color: var(--text-normal) !important;
+  border-bottom:
+    var(--jotter-bold-underline-width) solid var(--jotter-bold-underline) !important;
 }
