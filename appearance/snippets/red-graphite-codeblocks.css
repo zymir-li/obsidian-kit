@@ -1,0 +1,96 @@
+/*
+ * Red Graphite code blocks, adapted for the warm Codex/Obsidian palette.
+ * Source reference: Red Graphite 1.0.5 by Sean Williams.
+ *
+ * Scope: fenced code blocks only. Inline code and unrelated Markdown styles
+ * remain controlled by the active theme and zymir-obsidian-theme snippet.
+ */
+
+body {
+  --rg-code-block-radius: 4px;
+  --rg-code-block-border-width: 1px;
+  --rg-code-block-font-size: var(--font-smaller);
+  --rg-code-block-line-height: 1.55;
+}
+
+.theme-light {
+  --rg-code-block-background: #eeeae2;
+  --rg-code-block-border: #d6d0c4;
+}
+
+.theme-dark {
+  --rg-code-block-background: #242421;
+  --rg-code-block-border: #47453f;
+}
+
+/* Reading View. */
+.markdown-rendered:not(.dashboard-home) pre {
+  min-height: 38px;
+  padding: var(--size-4-3) var(--size-4-4) !important;
+  border: var(--rg-code-block-border-width) solid
+    var(--rg-code-block-border) !important;
+  border-radius: var(--rg-code-block-radius) !important;
+  background: var(--rg-code-block-background) !important;
+  box-shadow: none !important;
+  white-space: var(--code-white-space);
+  overflow-x: auto;
+}
+
+.markdown-rendered:not(.dashboard-home) pre > code {
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  font-size: var(--rg-code-block-font-size) !important;
+  line-height: var(--rg-code-block-line-height);
+}
+
+/* Live Preview / CM6. */
+.markdown-source-view.mod-cm6:not(.dashboard-home)
+  .cm-line.HyperMD-codeblock {
+  padding-inline-start: var(--size-4-4) !important;
+  font-size: var(--rg-code-block-font-size) !important;
+  line-height: var(--rg-code-block-line-height) !important;
+}
+
+.markdown-source-view.mod-cm6:not(.dashboard-home)
+  .cm-line.HyperMD-codeblock:is(.cm-active, .cm-activeLine) {
+  background: var(--rg-code-block-background) !important;
+}
+
+.markdown-source-view.mod-cm6:not(.dashboard-home)
+  .cm-line.HyperMD-codeblock:is(.cm-active, .cm-activeLine)::before {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.cm-s-obsidian div.HyperMD-codeblock-bg {
+  border-width: 0 var(--rg-code-block-border-width);
+  border-style: solid;
+  border-color: var(--rg-code-block-border);
+  background-color: var(--rg-code-block-background) !important;
+}
+
+.cm-s-obsidian div.HyperMD-codeblock-begin-bg {
+  border-width: var(--rg-code-block-border-width)
+    var(--rg-code-block-border-width) 0;
+  border-style: solid;
+  border-color: var(--rg-code-block-border);
+  border-radius: var(--rg-code-block-radius) var(--rg-code-block-radius) 0 0;
+  background-color: var(--rg-code-block-background) !important;
+}
+
+.cm-s-obsidian div.HyperMD-codeblock-end-bg {
+  border-width: 0 var(--rg-code-block-border-width)
+    var(--rg-code-block-border-width);
+  border-style: solid;
+  border-color: var(--rg-code-block-border);
+  border-radius: 0 0 var(--rg-code-block-radius) var(--rg-code-block-radius);
+  background-color: var(--rg-code-block-background) !important;
+}
+
+.markdown-source-view.mod-cm6:not(.dashboard-home) .code-block-flair {
+  top: 1px;
+  inset-inline-end: 1px;
+  color: var(--text-faint);
+}

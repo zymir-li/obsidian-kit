@@ -1,0 +1,9 @@
+{
+  "id": "secret-copy",
+  "name": "Secret Copy",
+  "version": "1.0.0",
+  "minAppVersion": "1.4.0",
+  "description": "Resolve keys in secret code blocks only when you explicitly copy them.",
+  "author": "zymir-li",
+  "isDesktopOnly": true
+}

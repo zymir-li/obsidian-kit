@@ -1,0 +1,25 @@
+{
+  "name": "obsidian-secret-copy",
+  "version": "1.0.0",
+  "description": "Safely resolve local secrets from fenced Obsidian code blocks on explicit copy.",
+  "private": true,
+  "main": "main.js",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "tsc --noEmit --skipLibCheck && node esbuild.config.mjs production",
+    "test": "vitest run",
+    "check": "npm run build && npm test"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.15.17",
+    "esbuild": "0.25.5",
+    "obsidian": "latest",
+    "typescript": "^5.8.3",
+    "vitest": "3.2.7"
+  }
+}
